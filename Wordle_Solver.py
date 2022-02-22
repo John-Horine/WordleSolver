@@ -1,10 +1,12 @@
 currentWordList= open("words.csv").read().splitlines()
 totalWordList= open("words.csv").read().splitlines()
+totalAllowedGuesses= open("allowed_guesses.csv").read().splitlines() + totalWordList
+
 
 def reduceList(word,infoList,currentWordList):
     for index, letter in enumerate(word):
         if(infoList[index]==0):
-            currentWordList= list(filter(lambda x: not(letter in x),currentWordList))
+            currentWordList= list(filter(lambda x: not(letter in x) or (letter in x and letter in word[:index]),currentWordList))
         elif(infoList[index]==1):
             currentWordList= list(filter(lambda x: letter in x and x[index] != letter,currentWordList))
         elif(infoList[index]==2):
@@ -46,13 +48,34 @@ def chooseWord(currentWordList):
     return minword
 
 def play():
-    wordlist=currentWordList
-    bestGuess = "raise"
+    wordlist=totalAllowedGuesses
+    bestGuess = "roate"
     print("the best Guess is " + bestGuess)
-    for i in range(6):
-        pattern= input("Insert Pattern with no spaces, 0 is gray, 1 is yellow, 2 is green")
-        splitPattern = [int(num) for num in pattern]
-        wordlist = reduceList(bestGuess,splitPattern,wordlist)
-        print(wordlist)
-        bestGuess = chooseWord(wordlist)
-        print("the best Guess is " + bestGuess)
+    pattern= input("Insert Pattern with no spaces, 0 is gray, 1 is yellow, 2 is green: ")
+    splitPattern = [int(num) for num in pattern]
+    wordlist = reduceList(bestGuess,splitPattern,wordlist)
+    bestGuess = chooseWord2(wordlist) 
+    print(wordlist)
+    wordlist = [word for word in totalWordList if word in wordlist]
+    print(wordlist)
+    print("the best Guess is " + bestGuess)
+    for i in range(5):
+            pattern= input("Insert Pattern with no spaces, 0 is gray, 1 is yellow, 2 is green: ")
+            splitPattern = [int(num) for num in pattern]
+            wordlist = reduceList(bestGuess,splitPattern,wordlist)
+            print(wordlist)
+            bestGuess = chooseWord(wordlist)
+            print("the best Guess is " + bestGuess)
+
+
+def chooseWord2(currentWordList):
+    minvalue= 10000000
+    minword = ""
+    for element in currentWordList:
+        wordEval= evaluateWord(element,[words for words in totalWordList if words in currentWordList])
+        if wordEval < minvalue:
+            minword=element
+            minvalue =wordEval
+    return minword
+
+#play()
