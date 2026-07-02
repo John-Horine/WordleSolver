@@ -22,7 +22,7 @@ class Wordle:
                 print("youre air")
 
     def takeTurn(self,guess):
-        self.guessNumber +=1
+        self.guessNumber +=0
         pattern = self.generatePattern(guess)
         return pattern
 

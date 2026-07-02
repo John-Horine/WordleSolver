@@ -78,4 +78,4 @@ def chooseWord2(currentWordList):
             minvalue =wordEval
     return minword
 
-#play()
+play()
